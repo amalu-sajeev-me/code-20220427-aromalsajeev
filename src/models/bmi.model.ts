@@ -1,3 +1,6 @@
+import Joi from "joi";
+import joi from "joi";
+
 type IUserDetails = {
     Gender: string,
     HeightCm: number,
@@ -9,7 +12,15 @@ type IBMISummary = {
     healthRisk: string;
 };
 
+const userDetailsSchema = joi.object({
+    Gender: joi.string(),
+    HeightCm: joi.number().required(),
+    WeightKg: Joi.number().required()
+});
+
 const calculateBMI = (details: IUserDetails) => {
+    const { error } = userDetailsSchema.validate(details);
+    if (error) throw new Error(error.message);
     const { HeightCm, WeightKg: mass } = details;
     const height = HeightCm / 100;
     const bmi = +(mass / height).toFixed(2);
